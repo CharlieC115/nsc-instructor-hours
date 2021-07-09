@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lessons Record</title>
+</head>
+<body>
+    {% for lesson in lessons %}
+        {{ lesson.lesson_date }}<br>
+        {{ lesson.lesson_start }}<br>
+        {{ lesson.lesson_finish }}<br>
+        {{ lesson.hours }}<br>
+        {{ lesson.lesson_type }}<br>
+        {{ lesson.mileage }}<br>
+        {{ lesson.expenses }}<br>
+    {% endfor %}
+</body>
+</html>
