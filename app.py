@@ -17,13 +17,29 @@ app.secret_key = os.environ.get('SECRET_KEY')
 
 mongo = PyMongo(app)
 
+abc = mongo.db.lessons.find({}, {'_id': 0, 'hours': 1})
+print(abc)
+sum = 0
+for ab in abc:
+    print(ab['hours'])
+    d = int(ab['hours'])
+    sum = sum + d
+print(sum)
 
 
 @app.route('/')
 @app.route('/get_lessons')
 def get_lessons():
+    abc = mongo.db.lessons.find({}, {'_id': 0, 'hours': 1})
+    print(abc)
+    sums = 0
+    for ab in abc:
+        print(ab['hours'])
+        d = int(ab['hours'])
+        sums = sums + d
+    sum = str(sums)
     lessons = mongo.db.lessons.find()
-    return render_template('lessons.html', lessons=lessons)
+    return render_template('lessons.html', lessons=lessons, sum=sum)
 
 
 @app.route('/register', methods=['GET', 'POST'])

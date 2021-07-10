@@ -1,14 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    {% for lesson in lessons %}
-        {{ lesson.lesson_date }}<br>
-        {{ lesson.lesson_start }}<br>
-        {{ lesson.lesson_finish }}<br>
-        {{ lesson.hours }}<br>
-        {{ lesson.lesson_type }}<br>
-        {{ lesson.mileage }}<br>
-        {{ lesson.expenses }}<br>
-    {% endfor %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>Finish Time</th>
+                <th>Hours</th>
+                <th>Lesson Type</th>
+                <th>Mileage?</th>
+                <th>Claim Expenses?</th>
+            </tr>
+        </thead>
+        <tbody>
 
+            {% for lesson in lessons %}
+                <tr>
+                    <td>{{ lesson.lesson_date }}</td>
+                    <td>{{ lesson.lesson_start }}</td>
+                    <td>{{ lesson.lesson_finish }}</td>
+                    <td>{{ lesson.hours }}</td>
+                    <td>{{ lesson.lesson_type }}</td>
+                    <td>{{ lesson.mileage }}</td>
+                    <td>{{ lesson.expenses }}</td>
+                </tr>
+            {% endfor %}
+            
+        </tbody> 
+    </table>
+
+    <h4>Total hours: {{ sum }}</h4>
+       
 {% endblock %}
