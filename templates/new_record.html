@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h3 class="light-blue-text text-darken-4 center-align">New Record</h3>
+
+    <div class="row card-panel grey lighten-5">
+        <form class="col s12" method="POST" action="{{ url_for('new_record') }}">
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="fas fa-calendar-alt prefix light-blue-text text-darken-4"></i>
+                    <input id="lesson_date" name="lesson_date" type="text" class="datepicker validate" required>
+                    <label for="lesson_date">Lesson Date</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <i class="fas fa-clock prefix light-blue-text text-darken-4"></i>
+                    <input type="text" id="lesson_start" name="lesson_start" class="timepicker" required>
+                    <label for="lesson_start">Start Time</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <i class="fas fa-clock prefix light-blue-text text-darken-4"></i>
+                    <input type="text" id="lesson_finish" name="lesson_finish" class="timepicker" required>
+                    <label for="lesson_finish">Finish Time</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="fas fa-hourglass-start prefix light-blue-text text-darken-4"></i>
+                    <select id="hours" name="hours" class="validate" required>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">1</option>
+                        <option value="1.25">1.25</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2">2</option>
+                        <option value="2.5">2.5</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <label for="hours">Hours</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="fas fa-skiing prefix light-blue-text text-darken-4"></i>
+                    <select id="lesson_type" name="lesson_type" class="validate" required>
+                        <option value="" disabled selected>Choose your option</option>
+                        {% for category in categories %}
+                        <option value="{{ category.lesson_type }}">{{ category.lesson_type }}</option>
+                        {% endfor %}  
+                    </select>
+                    <label for="lesson_type">Lesson Type</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <div class="switch">
+                        <i class="fas fa-exclamation-circle prefix light-blue-text text-darken-4"></i>
+                        <label for="mileage">
+                            <input type="checkbox" id="mileage" name="mileage">
+                            <span class="lever"></span>
+                            Mileage?
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <div class="switch">
+                        <i class="fas fa-exclamation-circle prefix light-blue-text text-darken-4"></i>
+                        <label for="expenses">
+                            <input type="checkbox" id="expenses" name="expenses" checked>
+                            <span class="lever"></span>
+                            Expenses?
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 center-align">
+                    <button type="submit" class="btn-large light-blue darken-1 text-darken-4">
+                        Add Record <i class="fas fa-plus-square right"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

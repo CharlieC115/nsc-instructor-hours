@@ -17,27 +17,17 @@ app.secret_key = os.environ.get('SECRET_KEY')
 
 mongo = PyMongo(app)
 
-abc = mongo.db.lessons.find({}, {'_id': 0, 'hours': 1})
-print(abc)
-sum = 0
-for ab in abc:
-    print(ab['hours'])
-    d = int(ab['hours'])
-    sum = sum + d
-print(sum)
-
 
 @app.route('/')
 @app.route('/get_lessons')
 def get_lessons():
-    abc = mongo.db.lessons.find({}, {'_id': 0, 'hours': 1})
-    print(abc)
-    sums = 0
-    for ab in abc:
-        print(ab['hours'])
-        d = int(ab['hours'])
-        sums = sums + d
-    sum = str(sums)
+    
+    hours = mongo.db.lessons.find({}, {'_id': 0, 'hours': 1})
+    sum = 0
+    for hour in hours:
+        hour_num = float(hour['hours'])
+        sum = sum + hour_num
+
     lessons = mongo.db.lessons.find()
     return render_template('lessons.html', lessons=lessons, sum=sum)
 
@@ -115,6 +105,29 @@ def logout():
     flash('You have been logged out')
     session.pop('user')
     return redirect(url_for('login'))
+
+
+@app.route('/new_record', methods=['GET', 'POST'])
+def new_record():
+    if request.method == 'POST':
+        mileage = 'Yes' if request.form.get('mileage') else 'No'
+        expenses = 'Yes' if request.form.get('expenses') else 'No'
+        record = {
+            'lesson_date': request.form.get('lesson_date'),
+            'lesson_start': request.form.get('lesson_start'),
+            'lesson_finish': request.form.get('lesson_finish'),
+            'hours': request.form.get('hours'),
+            'lesson_type': request.form.get('lesson_type'),
+            'mileage': mileage,
+            'expenses': expenses,
+            'entry_by': session['user']
+        }
+        mongo.db.lessons.insert_one(record)
+        flash('Record successfully Added')
+        return redirect(url_for('get_lessons'))
+
+    categories = mongo.db.lesson_type.find().sort('lesson_type', 1)
+    return render_template('new_record.html', categories=categories)
 
 
 if __name__ == '__main__':
