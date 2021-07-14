@@ -21,7 +21,8 @@ mongo = PyMongo(app)
 @app.route('/')
 @app.route('/home')
 def home():
-    
+    return render_template('home.html')
+
 
 @app.route('/get_lessons')
 def get_lessons():
@@ -180,6 +181,32 @@ def edit_record(lesson_id):
     lesson = mongo.db.lessons.find_one({'_id': ObjectId(lesson_id)})
     categories = mongo.db.lesson_type.find().sort('lesson_type', 1)
     return render_template('edit_record.html', lesson=lesson, categories=categories)
+
+
+@app.route('/delete_record/<lesson_id>')
+def delete_record(lesson_id):
+    mongo.db.lessons.remove({'_id': ObjectId(lesson_id)})
+    flash('Record Successfully Deleted')
+    return redirect(url_for('get_lessons'))
+
+
+@app.route('/manage_lessons')
+def manage_lessons():
+    lesson_type = list(mongo.db.lesson_type.find().sort('lesson_type', 1))
+    return render_template('manage_lessons.html', lesson_type=lesson_type)
+
+
+@app.route('/new_lesson_type', methods=['GET', 'POST'])
+def new_lesson_type():
+    if request.method == 'POST':
+        lesson_type = {
+            'lesson_type': request.form.get('add_lesson_type')
+        }
+        mongo.db.lesson_type.insert_one(lesson_type)
+        flash('New Lesson Type Added')
+        return redirect(url_for('manage_lessons'))
+
+    return render_template('new_lesson_type.html')
 
 
 if __name__ == '__main__':
