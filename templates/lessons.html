@@ -4,27 +4,35 @@
     <table>
         <thead>
             <tr>
+                <th>User</th>
                 <th>Date</th>
                 <th>Start Time</th>
                 <th>Finish Time</th>
                 <th>Hours</th>
+                <th>Expense Due</th>
                 <th>Lesson Type</th>
                 <th>Mileage?</th>
                 <th>Claim Expenses?</th>
+                <th>Edit?</th>
             </tr>
         </thead>
         <tbody>
 
             {% for lesson in lessons %}
+                {% if session.user|lower == lesson.entry_by|lower %}
                 <tr>
+                    <td>{{ lesson.entry_by }}</td>
                     <td>{{ lesson.lesson_date }}</td>
                     <td>{{ lesson.lesson_start }}</td>
                     <td>{{ lesson.lesson_finish }}</td>
                     <td>{{ lesson.hours }}</td>
+                    <td>{{ lesson.lesson_expense }}</td>
                     <td>{{ lesson.lesson_type }}</td>
                     <td>{{ lesson.mileage }}</td>
                     <td>{{ lesson.expenses }}</td>
+                    <td><a href="{{ url_for('edit_record', lesson_id=lesson._id) }}" class="btn-small light-blue lighten-1">Edit</a></td>
                 </tr>
+                {% endif %}
             {% endfor %}
 
         </tbody> 
