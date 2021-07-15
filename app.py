@@ -5,6 +5,7 @@ from flask import (
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 if os.path.exists('env.py'):
     import env
 
@@ -33,8 +34,15 @@ def get_lessons():
         hour_num = float(hour['hours'])
         sum = sum + hour_num
 
-    lessons = mongo.db.lessons.find()
+    lessons = list(mongo.db.lessons.find().sort('datetime_millisec', 1))
     return render_template('lessons.html', lessons=lessons, sum=sum)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    query = request.form.get('query')
+    lessons = list(mongo.db.lessons.find({'$text': {'$search': query}}).sort('datetime_millisec', 1))
+    return render_template('lessons.html', lessons=lessons)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -131,16 +139,26 @@ def new_record():
         else:
             lesson_expense = str(round(float(hours) * 4.8, 2))
 
+        date = request.form.get('lesson_date')
+        start_time = request.form.get('lesson_start')
+        full_date_time = date + ' ' + start_time
+
+        dateti = datetime.strptime(full_date_time, '%d.%m.%Y %H:%M')
+        millisec = dateti.timestamp()
+
+        # print(start_time - request.form.get('lesson_finish'))
+
         record = {
-            'lesson_date': request.form.get('lesson_date'),
-            'lesson_start': request.form.get('lesson_start'),
+            'lesson_date': date,
+            'lesson_start': start_time,
             'lesson_finish': request.form.get('lesson_finish'),
             'hours': hours,
             'lesson_type': request.form.get('lesson_type'),
             'mileage': mileage,
             'expenses': expenses,
             'entry_by': session['user'],
-            'lesson_expense': lesson_expense
+            'lesson_expense': lesson_expense,
+            'datetime_millisec': millisec
         }
 
         mongo.db.lessons.insert_one(record)
@@ -221,6 +239,13 @@ def edit_lesson_type(lesson_type_id):
 
     lesson_type = mongo.db.lesson_types.find_one({'_id': ObjectId(lesson_type_id)})
     return render_template('edit_lesson_type.html', lesson_type=lesson_type)
+
+
+@app.route('/delete_lesson_type/<lesson_type_id>')
+def delete_lesson_type(lesson_type_id):
+    mongo.db.lesson_types.remove({'_id': ObjectId(lesson_type_id)})
+    flash('Category Successfully Deleted')
+    return redirect(url_for('manage_lessons'))
 
 
 if __name__ == '__main__':

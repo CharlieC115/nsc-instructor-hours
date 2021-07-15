@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $('.sidenav').sidenav({edge: 'right'});
     $('.datepicker').datepicker({
-      format: 'dd mmmm, yyyy',
+      format: 'dd.mm.yyyy',
       yearRange: 1,
       showClearBtn: true,
       i18n: {
