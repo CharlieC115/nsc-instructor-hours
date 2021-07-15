@@ -147,7 +147,7 @@ def new_record():
         flash('Record successfully Added')
         return redirect(url_for('get_lessons'))
 
-    categories = mongo.db.lesson_type.find().sort('lesson_type', 1)
+    categories = mongo.db.lesson_types.find().sort('lesson_type', 1)
     return render_template('new_record.html', categories=categories)
 
 
@@ -179,7 +179,7 @@ def edit_record(lesson_id):
         flash('Record successfully Updated')
 
     lesson = mongo.db.lessons.find_one({'_id': ObjectId(lesson_id)})
-    categories = mongo.db.lesson_type.find().sort('lesson_type', 1)
+    categories = mongo.db.lesson_types.find().sort('lesson_type', 1)
     return render_template('edit_record.html', lesson=lesson, categories=categories)
 
 
@@ -192,21 +192,35 @@ def delete_record(lesson_id):
 
 @app.route('/manage_lessons')
 def manage_lessons():
-    lesson_type = list(mongo.db.lesson_type.find().sort('lesson_type', 1))
-    return render_template('manage_lessons.html', lesson_type=lesson_type)
+    lesson_types = list(mongo.db.lesson_types.find().sort('lesson_type', 1))
+    return render_template('manage_lessons.html', lesson_types=lesson_types)
 
 
 @app.route('/new_lesson_type', methods=['GET', 'POST'])
 def new_lesson_type():
     if request.method == 'POST':
-        lesson_type = {
+        lesson_types = {
             'lesson_type': request.form.get('add_lesson_type')
         }
-        mongo.db.lesson_type.insert_one(lesson_type)
+        mongo.db.lesson_types.insert_one(lesson_types)
         flash('New Lesson Type Added')
         return redirect(url_for('manage_lessons'))
 
     return render_template('new_lesson_type.html')
+
+
+@app.route('/edit_lesson_type/<lesson_type_id>', methods=['GET', 'POST'])
+def edit_lesson_type(lesson_type_id):
+    if request.method == 'POST':
+        lesson_types = {
+            'lesson_type': request.form.get('add_lesson_type')
+        }
+        mongo.db.lesson_types.update({'_id': ObjectId(lesson_type_id)}, lesson_types)
+        flash('Category Successfully Updated')
+        return redirect(url_for('manage_lessons'))
+
+    lesson_type = mongo.db.lesson_types.find_one({'_id': ObjectId(lesson_type_id)})
+    return render_template('edit_lesson_type.html', lesson_type=lesson_type)
 
 
 if __name__ == '__main__':
